@@ -10,7 +10,7 @@ Identify indicators of compromise (IOCs) across endpoints, email, and network te
 
 Reconstruct the attack chain. 
 
-Evaluate SOC processes of detection, escalation, and response. 
+Evaluate SOC processes for detection, escalation, and response. 
 
 Scope & Assumptions 
 
@@ -18,7 +18,7 @@ All analysis is performed on the BOTSv3 dataset ingested into Splunk Enterprise.
 
 The investigation focuses on BOTSv3 300-level guided questions. 
 
-The environment emulates an enterprise SOC with endpoint, email, and authentication telemetry. 
+The environment emulates an enterprise SOC with endpoint, email, and authentication of telemetry. 
 
 SOC ROLES & INCIDENT HANDLING REFLECTION 
 
@@ -144,6 +144,10 @@ Findings:
 
 A suspicious shortcut file “BRUCE BIRTHDAY HAPPY HOUR PICS.lnk” has been uploaded to the OneDrive by user bgist@froth.ly. The “.lnk” indicates a phishing-based malware delivery mechanism. 
 
+Answer: 
+
+“Mozilla/5.0 (X11; U; Linux i686; ko-KP; rv: 19.1br) Gecko/20130508 Fedora/1.9.1-2.5.rs3.0 NaenaraBrowser/3.5b4” 
+
 SOC Relevance: 
 
 Malicious LNK files are commonly used to execute hidden PowerShell payloads and this establishes the initial compromise vector of the incident. 
@@ -167,6 +171,10 @@ An email with subject “Draft Financial Plan for Brewery FY2019” with attachm
 Action: All attachments have been removed. 
 
  Frothly-Brewery-Financial-Planning-FY2019-Draft.xlsm   W97M.Empstage” 
+
+Answer: 
+
+“Frothly-Brewery-Financial-Planning-FY2019-Draft.xlsm” 
 
 SOC Relevance: 
 
@@ -194,6 +202,10 @@ Findings:
 
 The macro executed “Frothly-Brewery-Financial-Planning-FY2019-Draft[66].xlsm” via process HxTsr.exe, followed by quarantine by Symantec. 
 
+Answer: 
+
+“HxTsr.exe” 
+
 SOC Relevance: 
 
 This shows successful execution of malware code at the endpoint. 
@@ -216,6 +228,10 @@ Findings:
 
 Attacker has successfully created a new system user and set the password as “ilovedavidverve”. 
 
+Answer: 
+
+“ilovedavidverve” 
+
 SOC Relevance: 
 
 Account creation ensures persistence ie, they can log in later whenever they want and lateral movement capability. 
@@ -231,6 +247,10 @@ index=botsv3 source=wineventlog:security EventCode=4720
 Findings: 
 
 One new account has been created, and the username is “svcnvc” under the account domain “FYODOR-L”. 
+
+Answer: 
+
+“svcvnc” 
 
 SOC Relevance: 
 
@@ -249,6 +269,10 @@ index=botsv3 svcnvc EventCode=4732
 Findings: 
 
 Two accounts have been created “Administrators and Users”, under svcnvc 
+
+Answer: 
+
+“administrators,user” 
 
 SOC Relevance: 
 
@@ -271,6 +295,10 @@ index=botsv3 sourcetype=osquery:results host=hoth 1337
 Findings: 
 
 A malicious backdoor service was identified listening on port 1337, associated with process ID (PID) 14356. 
+
+Answer: 
+
+“14356” 
 
 SOC Relevance: 
 
@@ -317,6 +345,10 @@ index=botsv3 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" ho
 Findings: 
 
 Investigation identified a malicious executable “C:\Windows\Temp\hdoor.exe”, which was responsible for conducting large-scale network reconnaissance across Frothly’s environment. The file has automated a network scanner to a range of ports 21, 22, 80, 135, 139, 443, 445, 3306, 8000, 8080. Further analysis of Sysmon process creation logs revealed the cryptographic fingerprint of the malware “MD5 Hash: 586EF56F4D8963DD546163AC31C865D7” 
+
+Answer: 
+
+“586EF56F4D8963DD546163AC31C865D7” 
 
 SOC Relevance: 
 
