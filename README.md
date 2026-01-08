@@ -92,33 +92,16 @@ Last Event: 2019-09-19 19:10:50
 
 The time range and total event confirm that the dataset is ingested completely without truncation or corruption, satisfying forensic integrity requirements. Later, field extraction and data integrity were also validated by inspecting raw events and extracting fields within Splunk. (All the screenshot evidence is attached under evidence) 
 
- 
+Justification of SOC Architecture Choices
+Ubuntu OS — Industry-standard SOC analysis platform and high compatibility with SIEM and forensic tooling 
 
-Component 
+VMware Virtualization — Enables safe malware analysis, rapid snapshot rollback, and controlled experimentation 
 
-Justification 
+Splunk Enterprise — Enterprise-grade SIEM used globally for SOC detection, investigation, and response 
 
-Ubuntu OS 
+BOTSv3 Dataset — Realistic attack dataset containing multi-stage intrusion scenarios 
 
-Industry-standard SOC analysis platform and high compatibility with SIEM and forensic tooling 
-
-VMware Virtualization 
-
-Enables safe malware analysis, rapid snapshot rollback, and controlled experimentation 
-
-Splunk Enterprise 
-
-Enterprise-grade SIEM used globally for SOC detection, investigation, and response 
-
-BOTSv3 Dataset 
-
-Realistic attack dataset containing multi-stage intrusion scenarios 
-
-Local Deployment 
-
-Eliminates external network dependencies, improves investigation reproducibility 
-
-Table 1: Justification of SOC Architecture Choices 
+Local Deployment — Eliminates external network dependencies, improves investigation reproducibility 
 
 GIUDED QUESTIONS 
 
@@ -312,7 +295,7 @@ Query:
 
 Part A – Port Scanning Malware: 
 
-index=botsv3 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" host=”FYODOR-L”  
+index=botsv3 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" host=”FYODOR-L”   
 
 (“<EventID>3</EventID>” OR EventCode=3 OR EventID=3) 
 
@@ -329,8 +312,6 @@ Part B – Hash Extraction:
 index=botsv3 sourcetype="XmlWinEventLog:Microsoft-Windows-Sysmon/Operational" host=”FYODOR-L”   
 
 (“<EventID>1</EventID>” OR EventCode=1 OR EventID=1) 
-
- 
 
 | rex field=_raw "Data Name='Image'>(?<Image>[^<]+)"  
 
@@ -354,237 +335,42 @@ SOC Relevance:
 
 The investigation provides high-confidence indicators of compromise (IOCs) that enable SOC teams to rapidly detect, contain, and eradicate the attacker’s reconnaissance activity across the enterprise, significantly reducing the risk of lateral movement and data exfiltration. 
 
+
 IOC Identified: 
+Malicious File Name — hdoor.exe — Primary malware used for network reconnaissance and scanning 
 
-Category 
+File Path — C:\Windows\Temp\hdoor.exe — Suspicious execution location commonly used for malware staging 
 
-Indicator 
+MD5 Hash — 586EF56F4D8963DD546163AC31C865D7 — Unique cryptographic fingerprint of the malware 
 
-Description / Significance 
+Listening Port — 1337 — Non-standard port used for attacker backdoor / C2 communications 
 
-Malicious File Name 
+Backdoor PID — 14356 — Active malicious process controlling the backdoor 
 
-hdoor.exe 
+Malicious Attachment — Frothly-Brewery-Financial-Planning-FY2019-Draft.xlsm — Initial macro-enabled payload delivery 
 
-Primary malware used for network reconnaissance and scanning 
+Malicious Shortcut — BRUCE BIRTHDAY HAPPY HOUR PICS.lnk — Phishing delivery mechanism 
 
-File Path 
+Compromised Accounts — svcnvc, tomcat7 — Accounts created by attacker for persistence and privilege escalation 
 
-C:\Windows\Temp\hdoor.exe 
+Investigation Summary:
+Initial Infection — Malicious LNK & macro email 
 
-Suspicious execution location commonly used for malware staging 
+Execution — Macro payload executed 
 
-MD5 Hash 
+Persistence — Malicious Linux & Windows accounts 
 
-586EF56F4D8963DD546163AC31C865D7 
+Privilege Escalation — svcnvc → Administrators 
 
-Unique cryptographic fingerprint of the malware 
+Backdoor — PID 14356 on port 1337 
 
-Listening Port 
+Reconnaissance — hdoor.exe port scanning 
 
-1337 
-
-Non-standard port used for attacker backdoor / C2 communications 
-
-Backdoor PID 
-
-14356 
-
-Active malicious process controlling the backdoor 
-
-Malicious Attachment 
-
-Frothly-Brewery-Financial-Planning-FY2019-Draft.xlsm 
-
-Initial macro-enabled payload delivery 
-
-Malicious Shortcut 
-
-BRUCE BIRTHDAY HAPPY HOUR PICS.lnk 
-
-Phishing delivery mechanism 
-
-Compromised Accounts 
-
-svcnvc, tomcat7 
-
-Accounts created by attacker for persistence and privilege escalation 
-
-Table 2: IOC 
-
-Investigation Summary: 
-
-Stage 
-
-Result 
-
-Initial Infection 
-
-Malicious LNK & macro email 
-
-Execution 
-
-Macro payload executed 
-
-Persistence 
-
-Malicious Linux & Windows accounts 
-
-Privilege Escalation 
-
-svcnvc → Administrators 
-
-Backdoor 
-
-PID 14356 on port 1337 
-
-Reconnaissance 
-
-hdoor.exe port scanning 
-
-Malware Hash 
-
-586EF56F4D8963DD546163AC31C865D7 
-
-Table 3: Investigation Summary 
-
-INCIDENT ASSESSMENT 
-
-Q# 
-
-Stage of Attack 
-
-Key Finding 
-
-Evidence & Artifact 
-
-SOC Impact 
-
-MITRE ATT&CK Technique 
-
-Evidence 
-
-Q1 
-
-Initial Access 
-
-Malicious .lnk file BRUCE BIRTHDAY HAPPY HOUR PICS.lnk uploaded to OneDrive by compromised user bgist@froth.ly. 
-
-OneDrive upload logs showing .lnk file 
-
-Confirms phishing-based malware delivery. 
-
-T1566.001 - Phishing Attachment 
-
-q1_malicious_lnk_useragent 
-
-Q2 
-
-Execution 
-
-Spear-phishing email with malicious macro attachment Frothly-Brewery-Financial-Planning-FY2019-Draft.xlsm. 
-
-SMTP logs & decoded Base64 content 
-
-Demonstrates weaponised document delivery. 
-
-T1204.002 - User Execution: Malicious File 
-
-q2_malicious_macro_attachment_1,2 
-
-q2_base64_decode_macro_alert 
-
-Q3 
-
-Execution 
-
-Macro executed via HxTsr.exe, establishing initial foothold. 
-
-Sysmon process creation events 
-
-Confirms successful endpoint compromise. 
-
-T1059 - Command & Scripting Interpreter 
-
-q3_embedded_executable 
-
-Q4 
-
-Persistence 
-
-Attacker created Linux user: tomcat7 with  
-
-Password: ilovedavidverve on host hoth. 
-
-Osquery process logs (useradd) 
-
-Ensures persistence & lateral movement. 
-
-T1136.001 - Create Account: Local Account 
-
-q4_linux_user_created_password 
-
-Q5 
-
-Persistence 
-
-Windows backdoor account svcnvc created (EventCode 4720). 
-
-Windows Security Event 4720 
-
-Establishes persistent access. 
-
-T1136.001 - Create Account 
-
-q5_user_created_4720 
-
-Q6 
-
-Privilege Escalation 
-
-Account svcnvc added to Administrators group. 
-
-Event 4732 group modification logs 
-
-Full system control obtained. 
-
-T1068 - Privilege Escalation 
-
-q6_successful_login_svcnvc 
-
-Q7 
-
-Command & Control 
-
-Backdoor listener running on port 1337 (PID 14356). 
-
-Sysmon EventID 3 network activity 
-
-Enables remote attacker control. 
-
-T1043 - Commonly Used Port 
-
-q7_processID 
-
-Q8 
-
-Discovery & Recon 
-
-Malware hdoor.exe performed multi-port scanning (135, 139, 21, 22, 3306, 443, 445, 80, 8000, 8080). MD5 hash identified: 586EF56F4D8963DD546163AC31C865D7 
-
-Sysmon EventID 1 hash extraction 
-
-Enables IOC-based detection & eradication. 
-
-T1046 - Network Service Discovery, T1087 - Account Discovery 
-
-q8_Identification of Port-Scanning Process, q8_MD5 Hash Extraction 
-
-Table 4: Professional Summary 
+Malware Hash — 586EF56F4D8963DD546163AC31C865D7 
 
 CONCLUSION 
 
-The investigation of BOTSv3 dataset using Splunk has provided a comprehensive end-to-end analysis, which simulates to real-world enterprise security incident demonstrating the role of SOC in detecting, analyzing, and responding to sophisticated cyber threats. The investigation shows that the attacker has followed a well-structured adversary lifecycle. Starting from social-engineering delivery through malicious shortcut and macro-enabled attachments, progressing through malware execution, persistence via account creation, privilege escalation, and culminating in active network reconnaissance and command-and-control operations. Investigation also confirmed the attacker’s operational maturity and intent.  
+The investigation of BOTSv3 dataset using Splunk has provided a comprehensive end-to-end analysis, which simulates to real-world enterprise security incident demonstrating the role of SOC in detecting, analyzing, and responding to sophisticated cyber threats.  The investigation shows that the attacker has followed a well-structured adversary lifecycle. Starting from social-engineering delivery through malicious shortcut and macro-enabled attachments, progressing through malware execution, persistence via account creation, privilege escalation, and culminating in active network reconnaissance and command-and-control operations. Investigation also confirmed the attacker’s operational maturity and intent.  
 
 The discovery of malware hdoor.exe and its extensive port scanning and establishment of a backdoor listener on port 1337 and the extraction of the high-confidence IOC MD5: 586EF56F4D8963DD546163AC31C865D7 demonstrated a full system compromise. The creation of malicious accounts on both Linux and Windows (tomcat7 and svcnvc) systems shows how attackers blend into legitimate administrative activity to maintain long-term control and evade detection. 
 
@@ -597,6 +383,7 @@ Endpoint telemetry such as Sysmon and osquery provide unparalleled visibility in
 Early correlation between endpoint, network, and identity data dramatically reduces dwell time and limits attacker progression. 
 
 It also shows the importance of continuous threat hunting, behavior-based detection, and automated IOC propagation across security controls. To strengthen organizations' resilience, improvement in detection logic, privilege monitoring, and response orchestration must be made. In short, this SOC investigation shows how disciplined SOC methodology, supported by powerful analytical platforms such as Splunk, transforms fragmented telemetry into actionable intelligence and decisive incident response. 
+
 
 REFERENCES 
 
@@ -617,3 +404,4 @@ S. Gordon and M. Loeb, “The Economics of Information Security Investment,” A
 ENISA, Threat Landscape for Phishing Attacks, European Union Agency for Cybersecurity, 2023. 
 
 Verizon, 2023 Data Breach Investigations Report, Verizon Enterprise, 2023. 
+
