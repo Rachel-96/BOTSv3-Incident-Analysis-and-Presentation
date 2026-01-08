@@ -384,14 +384,16 @@ Endpoint telemetry such as Sysmon and osquery provide unparalleled visibility in
 
 Early correlation between endpoint, network, and identity data dramatically reduces dwell time and limits attacker progression. 
 
-It also shows the importance of continuous threat hunting, behavior-based detection, and automated IOC propagation across security controls. To strengthen organizations' resilience, improvement in detection logic, privilege monitoring, and response orchestration must be made. In short, this SOC investigation shows how disciplined SOC methodology, supported by powerful analytical platforms such as Splunk, transforms fragmented telemetry into actionable intelligence and decisive incident response. 
+It also shows the importance of continuous threat hunting, behavior-based detection, and automated IOC propagation across security controls. To strengthen organizations' resilience, improvement in detection logic, privilege monitoring, and response orchestration must be made. In short, this SOC investigation shows how disciplined SOC methodology, supported by powerful analytical platforms such as Splunk, transforms fragmented telemetry into actionable intelligence and decisive incident response. Future SOC maturity should prioritise automation of IOC propagation, adoption of Zero Trust principles, and continuous adversary emulation to ensure resilience against evolving threat landscapes.
 
 
 REFERENCES 
 
 Splunk Inc., Boss of the SOC (BOTS) Dataset Version 3, 2023. [Online]. Available: https://github.com/splunk/botsv3 
 
-National Institute of Standards and Technology, Computer Security Incident Handling Guide (SP 800-61 Rev. 2), Gaithersburg, MD, USA: NIST, 2012. 
+National Institute of Standards and Technology, Computer Security Incident Handling Guide (SP 800-61 Rev. 2), Gaithersburg, MD, USA: NIST, 2012.
+
+NIST (2020) Zero Trust Architecture (SP 800-207). National Institute of Standards and Technology. 
 
 MITRE Corporation, MITRE ATT&CK® Framework, 2023. [Online]. Available: https://attack.mitre.org 
 
