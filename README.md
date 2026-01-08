@@ -20,6 +20,8 @@ The investigation focuses on BOTSv3 300-level guided questions.
 
 The environment emulates an enterprise SOC with endpoint, email, and authentication of telemetry. 
 
+This investigation aligns with NIST SP 800-61 incident response principles and MITRE ATT&CK adversary modelling, reflecting industry-aligned SOC practice. 
+
 SOC ROLES & INCIDENT HANDLING REFLECTION 
 
 SOC TIERS 
